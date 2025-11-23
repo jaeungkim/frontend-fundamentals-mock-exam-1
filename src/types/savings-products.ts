@@ -6,3 +6,9 @@ export type SavingsProduct = {
   maxMonthlyAmount: number;
   availableTerms: number;
 };
+
+export interface SavingsProductFilters {
+  targetAmount?: number;
+  monthlyAmount?: number;
+  term?: number;
+}

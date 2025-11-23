@@ -1,6 +1,10 @@
 import SavingsCalculatorsInputs from 'components/savings-products/SavingsCalculatorsInputs';
+import SavingsProductsListItem from 'components/savings-products/SavingsProductsListItem';
 import { useSavingsProducts } from 'hooks/savings-products';
-import { Assets, Border, colors, ListRow, NavigationBar, Spacing, Tab } from 'tosslib';
+import { useMemo, useState } from 'react';
+import { Border, ListRow, NavigationBar, Spacing, Tab } from 'tosslib';
+import { SavingsProductFilters } from 'types/savings-products';
+import { filterSavingsProducts } from 'utils/filter-savings-products';
 
 export function SavingsCalculatorPage() {
   // 1. 적금 상품 목록 연동하기 - 서버에서 적금 상품 목록을 불러와서 출력해주세요.
@@ -10,6 +14,20 @@ export function SavingsCalculatorPage() {
     isError: isErrorSavingsProducts,
     error: errorSavingsProducts,
   } = useSavingsProducts();
+
+  const [filters, setFilters] = useState<SavingsProductFilters>({
+    targetAmount: undefined,
+    monthlyAmount: undefined,
+    term: undefined,
+  });
+
+  // 필터링된 상품 목록 (메모이제이션)
+  const filteredProducts = useMemo(() => {
+    if (!savingsProducts) {
+      return [];
+    }
+    return filterSavingsProducts(savingsProducts, filters);
+  }, [savingsProducts, filters]);
 
   if (isLoadingSavingsProducts) {
     return <div>Loading...</div>;
@@ -25,7 +43,7 @@ export function SavingsCalculatorPage() {
 
       <Spacing size={16} />
 
-      <SavingsCalculatorsInputs />
+      <SavingsCalculatorsInputs filters={filters} onFiltersChange={setFilters} />
 
       <Spacing size={24} />
       <Border height={16} />
@@ -40,24 +58,13 @@ export function SavingsCalculatorPage() {
         </Tab.Item>
       </Tab>
 
-      {savingsProducts?.map(savingsProduct => (
-        <ListRow
-          key={savingsProduct.id}
-          contents={
-            <ListRow.Texts
-              type="3RowTypeA"
-              top={savingsProduct.name}
-              topProps={{ fontSize: 16, fontWeight: 'bold', color: colors.grey900 }}
-              middle={`연 이자율: ${savingsProduct.annualRate}%`}
-              middleProps={{ fontSize: 14, color: colors.blue600, fontWeight: 'medium' }}
-              bottom={`${savingsProduct.minMonthlyAmount}원 ~ ${savingsProduct.maxMonthlyAmount}원 | ${savingsProduct.availableTerms}개월`}
-              bottomProps={{ fontSize: 13, color: colors.grey600 }}
-            />
-          }
-          right={<Assets.Icon name="icon-check-circle-green" />}
-          onClick={() => {}}
-        />
-      ))}
+      {filteredProducts.length > 0 ? (
+        filteredProducts.map(savingsProduct => (
+          <SavingsProductsListItem key={savingsProduct.id} savingsProduct={savingsProduct} />
+        ))
+      ) : (
+        <ListRow contents={<ListRow.Texts type="1RowTypeA" top="상품을 찾을 수 없습니다." />} />
+      )}
 
       {/* 아래는 계산 결과 탭 내용이에요. 계산 결과 탭을 구현할 때 주석을 해제해주세요. */}
       {/* <Spacing size={8} />
