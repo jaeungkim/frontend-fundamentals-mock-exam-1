@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Assets, colors, ListRow } from 'tosslib';
 import { SavingsProduct } from 'types/savings-products';
 
@@ -6,6 +7,13 @@ interface SavingsProductsListItemProps {
 }
 
 export default function SavingsProductsListItem({ savingsProduct }: SavingsProductsListItemProps) {
+  // 3. 적금 상품 목록에서 선택 기능 만들기
+  const [isSelected, setIsSelected] = useState(false);
+
+  const handleClick = () => {
+    setIsSelected(!isSelected);
+  };
+
   return (
     <ListRow
       key={savingsProduct.id}
@@ -20,8 +28,8 @@ export default function SavingsProductsListItem({ savingsProduct }: SavingsProdu
           bottomProps={{ fontSize: 13, color: colors.grey600 }}
         />
       }
-      right={<Assets.Icon name="icon-check-circle-green" />}
-      onClick={() => {}}
+      right={isSelected ? <Assets.Icon name="icon-check-circle-green" /> : null}
+      onClick={handleClick}
     />
   );
 }
