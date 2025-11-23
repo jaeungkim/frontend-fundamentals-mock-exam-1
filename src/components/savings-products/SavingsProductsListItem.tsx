@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useSelectedProductStore } from 'stores/useSelectedProductStore';
 import { Assets, colors, ListRow } from 'tosslib';
 import { SavingsProduct } from 'types/savings-products';
 
@@ -7,11 +7,19 @@ interface SavingsProductsListItemProps {
 }
 
 export default function SavingsProductsListItem({ savingsProduct }: SavingsProductsListItemProps) {
-  // 3. 적금 상품 목록에서 선택 기능 만들기
-  const [isSelected, setIsSelected] = useState(false);
+  const selectedProduct = useSelectedProductStore(state => state.selectedProduct);
+  const setSelectedProduct = useSelectedProductStore(state => state.setSelectedProduct);
+
+  const isSelected = selectedProduct?.id === savingsProduct.id;
 
   const handleClick = () => {
-    setIsSelected(!isSelected);
+    if (isSelected) {
+      // 이미 선택된 상품이면 선택 해제
+      setSelectedProduct(null);
+    } else {
+      // 다른 상품 선택
+      setSelectedProduct(savingsProduct);
+    }
   };
 
   return (
