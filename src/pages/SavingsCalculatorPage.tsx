@@ -1,7 +1,7 @@
 import SavingsCalculationResults from 'components/savings-products/SavingsCalculationResults';
 import SavingsCalculatorsInputs from 'components/savings-products/SavingsCalculatorsFilters';
 import SavingsProductsList from 'components/savings-products/SavingsProductsList';
-import { useSavingsProductsQuery } from 'hooks/useSavingsProductsQuery';
+import { useSavingsProductsQuery } from 'hooks/queries/useSavingsProductsQuery';
 import { useMemo, useState } from 'react';
 import { useSelectedProductStore } from 'stores/useSelectedProductStore';
 import { Border, ListRow, NavigationBar, Spacing, Tab } from 'tosslib';
