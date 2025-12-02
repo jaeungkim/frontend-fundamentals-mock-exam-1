@@ -1,16 +1,17 @@
 import { Border, colors, ListHeader, ListRow, Spacing } from 'tosslib';
-import { SavingsProduct, SavingsProductFilters } from 'types/savings-products';
-import { useSavingsCalculations } from 'hooks/useSavingsCalculations';
-import RecommendedProducts from './RecommendedProducts';
+import { SavingsProduct, SavingsProductFilters } from 'pages/savings-calculator-page/types/savings-products';
+import { useSavingsCalculations } from 'pages/savings-calculator-page/hooks/useSavingsCalculations';
+import { SavingsProductsList } from './SavingsProductsList';
+import { orderByHighestRate } from '../api/useSavingsProductsQuery';
 
 export interface SavingsCalculationResultsProps {
-  filteredProducts: SavingsProduct[];
   filters: SavingsProductFilters;
+  selectedProduct: SavingsProduct;
 }
 
-export default function SavingsCalculationResults({ filteredProducts, filters }: SavingsCalculationResultsProps) {
+export default function SavingsCalculationResults({ filters, selectedProduct }: SavingsCalculationResultsProps) {
   const { predictedIncome, differenceFromTargetAmount, recommendedMonthlyAmount, hasRequiredFilters } =
-    useSavingsCalculations(filters);
+    useSavingsCalculations(filters, selectedProduct);
 
   const formatValue = (value: number, showSign = false) => {
     const sign = showSign && value >= 0 ? '+' : '';
@@ -69,7 +70,7 @@ export default function SavingsCalculationResults({ filteredProducts, filters }:
       <ListHeader title={<ListHeader.TitleParagraph fontWeight="bold">추천 상품 목록</ListHeader.TitleParagraph>} />
       <Spacing size={12} />
 
-      <RecommendedProducts filteredProducts={filteredProducts} />
+      <SavingsProductsList filters={filters} selectedProduct={selectedProduct} orderBy={orderByHighestRate} limit={2} />
     </>
   );
 }

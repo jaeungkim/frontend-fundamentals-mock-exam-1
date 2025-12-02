@@ -1,5 +1,5 @@
 import { http, isHttpError } from 'tosslib';
-import { SavingsProduct } from 'types/savings-products';
+import { SavingsProduct } from 'pages/savings-calculator-page/types/savings-products';
 
 // GET /api/savings-products
 export async function getSavingsProducts(): Promise<SavingsProduct[]> {
